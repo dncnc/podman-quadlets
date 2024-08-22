@@ -1,0 +1,44 @@
+[Unit]
+Description=Technitium Recursive DNS Server
+Documentation=https://technitium.com/dns/
+
+[Container]
+#AutoUpdate=registry
+ContainerName=dns-server
+Image=docker.io/technitium/dns-server:latest
+PublishPort=5380:5380/tcp
+PublishPort=53443:53443/tcp
+PublishPort=53:53/udp
+PublishPort=53:53/tcp
+
+# Environment variables.  Can also be setup via web console once server is started, including admin password set at first access of the web console
+#Environment=DNS_SERVER_DOMAIN=dns-server  #The primary domain name used by this DNS Server to identify itself.
+#Environment=DNS_SERVER_ADMIN_PASSWORD   #DNS web console admin user password 
+# OR AS A PODMAN SECRET as below.  User podman secret command to create the secret.
+#Secret=dns-server-admin-pw,type=env,target=DNS_SERVER_ADMIN_PASSWORD   #DNS web console admin user password.
+#Environment=DNS_SERVER_ADMIN_PASSWORD_FILE=password.txt #The path to a file that contains a plain text password for the DNS web console admin user.
+#Environment=DNS_SERVER_PREFER_IPV6=false #DNS Server will use IPv6 for querying whenever possible with this option enabled.
+#Environment=DNS_SERVER_WEB_SERVICE_LOCAL_ADDRESSES=172.17.0.1,127.0.0.1 #Comma separated list of network interface IP addresses that you want the web service to listen on for requests. The "172.17.0.1" address is the built-in Docker bridge. The "[::]" is the default value if not specified. Note! This must be used only with "host" network mode.
+Environment=DNS_SERVER_WEB_SERVICE_HTTP_PORT=5380 #The TCP port number for the DNS web console over HTTP protocol.
+Environment=DNS_SERVER_WEB_SERVICE_HTTPS_PORT=53443 #The TCP port number for the DNS web console over HTTPS protocol.
+Environment=DNS_SERVER_WEB_SERVICE_ENABLE_HTTPS=true #Enables HTTPS for the DNS web console.
+Environment=DNS_SERVER_WEB_SERVICE_USE_SELF_SIGNED_CERT=true #Enables self signed TLS certificate for the DNS web console.
+#Environment=DNS_SERVER_OPTIONAL_PROTOCOL_DNS_OVER_HTTP=false #Enables DNS server optional protocol DNS-over-HTTP on TCP port 8053 to be used with a TLS terminating reverse proxy like nginx.
+#Environment=DNS_SERVER_RECURSION=AllowOnlyForPrivateNetworks #Recursion options: Allow, Deny, AllowOnlyForPrivateNetworks, UseSpecifiedNetworks.
+#Environment=DNS_SERVER_RECURSION_DENIED_NETWORKS=1.1.1.0/24 #Comma separated list of IP addresses or network addresses to deny recursion. Valid only for `UseSpecifiedNetworks` recursion option.
+#Environment=DNS_SERVER_RECURSION_ALLOWED_NETWORKS=127.0.0.1, 192.168.1.0/24 #Comma separated list of IP addresses or network addresses to allow recursion. Valid only for `UseSpecifiedNetworks` recursion option.
+#Environment=DNS_SERVER_ENABLE_BLOCKING=false #Sets the DNS server to block domain names using Blocked Zone and Block List Zone.
+#Environment=DNS_SERVER_ALLOW_TXT_BLOCKING_REPORT=false #Specifies if the DNS Server should respond with TXT records containing a blocked domain report for TXT type requests.
+#Environment=DNS_SERVER_BLOCK_LIST_URLS= #A comma separated list of block list URLs.
+#Environment=DNS_SERVER_FORWARDERS=1.1.1.1, 8.8.8.8 #Comma separated list of forwarder addresses.
+#Environment=DNS_SERVER_FORWARDER_PROTOCOL=Tcp #Forwarder protocol options: Udp, Tcp, Tls, Https, HttpsJson.
+Environment=DNS_SERVER_LOG_USING_LOCAL_TIME=true #Enable this option to use local time instead of UTC for logging.
+Network=dns-server.network
+Volume=dns-server.volume:/etc/dns
+
+[Service]
+TimeoutStartSec=900
+TimeoutStopSec=300
+
+[Install]
+WantedBy=default.target

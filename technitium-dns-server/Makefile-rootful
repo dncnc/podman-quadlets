@@ -1,0 +1,30 @@
+app=dns-server
+
+.PHONY: dry-run
+dry-run:
+	cp -rf ./${app}*.* /etc/containers/systemd
+	/usr/libexec/podman/quadlet -dryrun
+
+.PHONY: reload
+reload:
+	cp -rf ./${app}*.* /etc/containers/systemd
+	systemctl daemon-reload
+	systemctl restart ${app}
+
+.PHONY: install
+install:
+	cp -rf ./${app}*.* /etc/containers/systemd
+	systemctl daemon-reload
+	systemctl restart ${app}
+
+.PHONY: stop
+stop:
+	systemctl stop ${app}
+
+.PHONY: remove
+remove:
+	systemctl stop ${app}
+	rm /etc/containers/systemd/${app}*.*
+	systemctl daemon-reload
+	echo "*** If desired, manually delete container, volumes, networks and any podman secrets that were created for this container ***"
+	
