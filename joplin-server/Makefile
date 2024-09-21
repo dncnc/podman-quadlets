@@ -1,0 +1,31 @@
+app=joplin-server
+
+.PHONY: dry-run
+dry-run:
+	cp -rf ./${app}*.* $(HOME)/.config/containers/systemd
+	/usr/libexec/podman/quadlet -dryrun -user
+
+.PHONY: reload
+reload:
+	cp -rf ./${app}*.* $(HOME)/.config/containers/systemd
+	systemctl --user daemon-reload
+	systemctl --user restart ${app}	
+
+.PHONY: install
+install:
+	systemctl --user enable --now podman.socket
+	cp -rf ./${app}*.* $(HOME)/.config/containers/systemd
+	systemctl --user daemon-reload
+	systemctl --user restart ${app}
+
+.PHONY: stop
+stop:
+	systemctl --user stop ${app}
+
+.PHONY: remove
+remove:
+	systemctl --user stop ${app}
+	rm $(HOME)/.config/containers/systemd/${app}*.*
+	systemctl --user daemon-reload
+	echo "*** If desired, manually delete container, volumes, networks and any podman secrets that were created for this container ***"
+	

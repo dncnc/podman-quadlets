@@ -1,0 +1,3 @@
+[Network]
+Label=app=joplin-server
+NetworkName=joplin-server

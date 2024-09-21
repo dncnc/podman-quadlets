@@ -1,0 +1,20 @@
+[Unit]
+Description=Postgres Database for Joplin Sync server
+Documentation=https://github.com/laurent22/joplin/blob/dev/packages/server/README.md
+StopPropagatedFrom=joplin-server.service
+
+[Install]
+WantedBy=default.target
+WantedBy=joplin-server.service
+
+[Container]
+Image=docker.io/library/postgres:15
+ContainerName=joplin-server-postgres
+Volume=joplin-server.volume:/var/lib/postgresql/data
+Network=joplin-server.network
+Environment=POSTGRES_USER=joplin
+Environment=POSTGRES_DB=joplin
+Secret=joplin-postgres-pass,type=env,target=POSTGRES_PASSWORD
+
+[Service]
+TimeoutStartSec=900
