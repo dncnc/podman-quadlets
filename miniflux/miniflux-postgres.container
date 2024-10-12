@@ -1,0 +1,24 @@
+[Unit]
+Description=Postgres Database for Miniflux
+Documentation=https://miniflux.app/docs/index.html
+#StopPropagatedFrom=miniflux.service
+
+[Install]
+WantedBy=default.target
+WantedBy=miniflux.service
+
+[Container]
+Image=docker.io/library/postgres:15
+ContainerName=miniflux-postgres
+Volume=miniflux.volume:/var/lib/postgresql/data
+Network=miniflux.network
+Environment=POSTGRES_USER=miniflux
+Environment=POSTGRES_DB=miniflux
+Secret=miniflux-postgres-pass,type=env,target=POSTGRES_PASSWORD
+#HealthCmd=["pg_isready","-U","miniflux"]
+#HealthInterval=10s
+#HealthStartPeriod=30s
+#HealthOnFailure=kill
+
+[Service]
+TimeoutStartSec=900
