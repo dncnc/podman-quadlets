@@ -8,6 +8,7 @@ WantedBy=default.target
 [Container]
 Image=docker.io/joplin/server:latest
 ContainerName=joplin-server
+AutoUpdate=registry
 Network=joplin-server.network
 PublishPort=22300:22300
 #Environment=APP_BASE_URL=https://server.tld
